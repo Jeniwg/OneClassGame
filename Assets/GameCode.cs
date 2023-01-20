@@ -40,13 +40,13 @@ public class GameCode : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 fwd = shootCast.transform.TransformDirection(Vector3.up);
-        RaycastHit objectHit;
-        Debug.DrawRay(shootCast.transform.position, fwd * 50, Color.green);
-
+        //verifica se pode atirar e se carrega no leftmousebutton, só se pode atirar uma vez
         if (Input.GetKey(KeyCode.Mouse0) && canShoot)
         {
-
+            //raycast para ver no que acerta, dummy ou background
+            Vector3 fwd = shootCast.transform.TransformDirection(Vector3.up);
+            RaycastHit objectHit;
+            Debug.DrawRay(shootCast.transform.position, fwd * 50, Color.green);
 
             if (Physics.Raycast(shootCast.transform.position, fwd, out objectHit, 50))
             {
@@ -71,6 +71,8 @@ public class GameCode : MonoBehaviour
                 }
             }
         }
+
+        //countdown de sec:milsec de 5sec
         if (startTimer)
         {
             if (miliseconds <= 0)
@@ -95,10 +97,12 @@ public class GameCode : MonoBehaviour
 
     IEnumerator CloseEyes()
     {
+        //tempo para observar
         yield return new WaitForSeconds(4.5f);
-        // close eyes 
+
         startTimer = true;
 
+        // close eyes -> fade do ecrã
         Color eyesColor = eyes.color;
         Color timerColor = timer.color;
         float fadeAmount;
@@ -116,12 +120,15 @@ public class GameCode : MonoBehaviour
             yield return null;
         }
 
+        // mini tempo para n poder atirar logo
         yield return new WaitForSeconds(.1f);
 
+        //pode atirar até fim dos 5sec
         canShoot = true;
 
         yield return new WaitForSeconds(4.15f);
 
+        //Abre os olhos 
         eyesColor = new Color(eyesColor.r, eyesColor.g, eyesColor.b, 0);
         timerColor = new Color(timerColor.r, timerColor.g, timerColor.b, 0);
         eyes.color = eyesColor;
@@ -132,8 +139,10 @@ public class GameCode : MonoBehaviour
 
         startTimer = false;
 
+        //mini tempo depois de abrir os olhos para o jogador observar o que acertou
         yield return new WaitForSeconds(2f);
 
+        //verifica se ganhou ou n
         if (win)
         {
             //win Screen
